@@ -60,6 +60,7 @@ function updateChart(type, prevPrice, newPrice) {
             }
         });
     }
+    applyMarketStatus();
 }
 
 async function checkLiveStatus() {
@@ -72,6 +73,7 @@ async function checkLiveStatus() {
         });
         const data = await response.json();
         isLive = data.data.length > 0;
+        applyMarketStatus();
     } catch (error) {
         console.error("Error checking live status:", error);
     }
@@ -89,6 +91,19 @@ async function checkLinkusLiveStatus() {
         linkusLive = data.data.length > 0;
     } catch (error) {
         console.error("Error checking Linkus7 live status:", error);
+    }
+}
+
+function applyMarketStatus() {
+    const chartsContainer = document.getElementById("chartsContainer");
+    const overlayText = document.getElementById("marketOverlay");
+
+    if (isLive) {
+        chartsContainer.style.filter = "none";
+        overlayText.style.display = "none";
+    } else {
+        chartsContainer.style.filter = "grayscale(100%)";
+        overlayText.style.display = "block";
     }
 }
 
@@ -115,7 +130,6 @@ function connectToChat() {
     socket.onerror = (error) => console.error("Chat connection error:", error);
 }
 
-// Run these functions periodically
 document.addEventListener("DOMContentLoaded", () => {
     ["glizz", "coffeeCow", "fmcl", "link"].forEach(type => updateChart(type, 100, 100));
 
@@ -126,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (linkusLive) updatePrice("link", 0.50);
     }, 60000);
 
-    // Update charts every 3 seconds
     setInterval(() => {
         ["glizz", "coffeeCow", "fmcl", "link"].forEach(type => {
             const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
