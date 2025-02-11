@@ -1,12 +1,9 @@
-const channelName = "atrioc";
-const clientId = "gp762nuuoqcoxypju8c569th9wz7q5";  // Replace with your actual Twitch Client ID
-const accessToken = "kbr6swl89bv97itcuukurnux1flnia"; // Replace with your actual Twitch OAuth Token
-const botUsername = "lofibirdbot";
-
 let glizzPrice = 100;
 let coffeeCowPrice = 100;
+let fmclPrice = 100;
 let glizzPriceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
 let coffeeCowPriceHistory = JSON.parse(localStorage.getItem("coffeeCowPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: coffeeCowPrice }];
+let fmclPriceHistory = JSON.parse(localStorage.getItem("fmclPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: fmclPrice }];
 let isLive = false;
 
 async function checkLiveStatus() {
@@ -47,6 +44,10 @@ function connectToChat() {
             console.log("Coffee Cow detected!");
             updatePrice("coffeeCow");
         }
+        if (message.includes("fmcl") || message.includes("chungus")) {
+            console.log("FMCL detected!");
+            updatePrice("fmcl");
+        }
     };
     socket.onerror = (error) => console.error("Chat connection error:", error);
 }
@@ -71,6 +72,14 @@ function updatePrice(type) {
         document.getElementById("coffeeCowPrice").innerText = `$${coffeeCowPrice}`;
         updateChart("coffeeCow");
     }
+    if (type === "fmcl") {
+        fmclPrice = (parseFloat(fmclPrice) + parseFloat(priceIncrease)).toFixed(2);
+        fmclPriceHistory.push({ time: new Date().toLocaleTimeString(), price: fmclPrice });
+        if (fmclPriceHistory.length > 20) fmclPriceHistory.shift();
+        localStorage.setItem("fmclPriceHistory", JSON.stringify(fmclPriceHistory));
+        document.getElementById("fmclPrice").innerText = `$${fmclPrice}`;
+        updateChart("fmcl");
+    }
 }
 
 function updateChart(type) {
@@ -81,7 +90,7 @@ function updateChart(type) {
         return;
     }
     
-    const priceHistory = type === "glizz" ? glizzPriceHistory : coffeeCowPriceHistory;
+    const priceHistory = type === "glizz" ? glizzPriceHistory : type === "coffeeCow" ? coffeeCowPriceHistory : fmclPriceHistory;
     const prices = priceHistory.map(p => p.price);
     const times = priceHistory.map(p => p.time);
     const color = prices.length > 1 && prices[prices.length - 1] > prices[prices.length - 2] ? "green" : "red";
@@ -113,6 +122,8 @@ setInterval(async () => {
 document.addEventListener("DOMContentLoaded", () => {
     updateChart("glizz");
     updateChart("coffeeCow");
+    updateChart("fmcl");
 });
+
 
 
