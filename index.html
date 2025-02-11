@@ -1,35 +1,55 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glizz Stock Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        .chart-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
 
-<div style="display: flex; justify-content: center; text-align: center; font-size:40px;">ATRIOC STOCK EXCHANGE</div>
-&nbsp;
-<center><img src="https://i.imgur.com/zr6srHF.png" alt="Little A coded this site so don't make fun of it."></center>
-&nbsp;
-<hr>
-&nbsp;
-<div style="display: flex; justify-content: center; text-align: center;">
-    <div>
-        <h2>$CC</h2>
-        <canvas id="coffeeCowChart" width="400" height="200"></canvas>
-        <p>Current Price: <span id="coffeeCowPrice">$100.00</span></p>
-    </div>
-    <div>
-        <h2>$GLIZZ</h2>
-        <canvas id="glizzChart" width="400" height="200"></canvas>
-        <p>Current Price: <span id="currentPrice">$100.00</span></p>
-    </div>
-</div>
+    <h1>Glizz Stock Tracker</h1>
 
-<div style="display: flex; justify-content: center; text-align: center;">
-    <div>
-    <h2>$FMCL</h2>
-    <canvas id="fmclChart" width="400" height="200"></canvas>
-    <p>Current Price: <span id="fmclPrice">$100.00</span></p>
-</div>
-<div>
-    <h2>$LINK</h2>
-    <canvas id="linkChart" width="400" height="200"></canvas>
-    <p>Current Price: <span id="linkPrice">$100.00</span></p>
+    <div class="chart-container">
+        <h2>$GLIZZ Price: <span id="glizzPrice">$100.00</span></h2>
+        <canvas id="glizzChart"></canvas>
     </div>
-</div>
 
+    <div class="chart-container">
+        <h2>$COFFEE COW Price: <span id="coffeeCowPrice">$100.00</span></h2>
+        <canvas id="coffeeCowChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>$FMCL Price: <span id="fmclPrice">$100.00</span></h2>
+        <canvas id="fmclChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>$LINK Price: <span id="linkPrice">$100.00</span></h2>
+        <canvas id="linkChart"></canvas>
+    </div>
+
+</body>
+</html>
 
