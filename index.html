@@ -57,7 +57,30 @@
             <h2>$LINK: <span id="linkPrice">$100.00</span></h2>
             <canvas id="linkChart"></canvas>
         </div>
+<div id="chartsContainer">
+    <canvas id="glizzChart"></canvas>
+    <canvas id="coffeeCowChart"></canvas>
+    <canvas id="fmclChart"></canvas>
+    <canvas id="linkChart"></canvas>
+    <div id="marketOverlay">Markets are closed!</div>
+</div>
+        <style>
+            #marketOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    font-size: 4rem;
+    font-weight: bold;
+    color: rgba(255, 0, 0, 0.5);
+    text-shadow: 2px 2px 5px black;
+    display: none;
+    pointer-events: none;
+}
+#chartsContainer {
+    position: relative;
+}</style>
     </div>
-
+</div>
 </body>
 </html>
