@@ -4,7 +4,9 @@ const accessToken = "kbr6swl89bv97itcuukurnux1flnia"; // Replace with your actua
 const botUsername = "lofibirdbot";
 
 let glizzPrice = 100;
-let priceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
+let coffeeCowPrice = 100;
+let glizzPriceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
+let coffeeCowPriceHistory = JSON.parse(localStorage.getItem("coffeeCowPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: coffeeCowPrice }];
 let isLive = false;
 
 async function checkLiveStatus() {
@@ -36,36 +38,54 @@ function connectToChat() {
     socket.onmessage = (event) => {
         console.log("Chat message received:", event.data);
         if (!isLive) return;
-        if (event.data.toLowerCase().includes("glizzy")) {
+        const message = event.data.toLowerCase();
+        if (message.includes("glizzy")) {
             console.log("Glizzy detected!");
-            updatePrice();
+            updatePrice("glizz");
+        }
+        if (message.includes("coffee cow")) {
+            console.log("Coffee Cow detected!");
+            updatePrice("coffeeCow");
         }
     };
     socket.onerror = (error) => console.error("Chat connection error:", error);
 }
 
-function updatePrice() {
-    console.log("Updating price...");
+function updatePrice(type) {
+    console.log(`Updating price for ${type}...`);
     const priceIncrease = (Math.random() * 1.75 + 0.25).toFixed(2);
-    glizzPrice = (parseFloat(glizzPrice) + parseFloat(priceIncrease)).toFixed(2);
-    priceHistory.push({ time: new Date().toLocaleTimeString(), price: glizzPrice });
-    if (priceHistory.length > 20) priceHistory.shift();
-    localStorage.setItem("glizzPriceHistory", JSON.stringify(priceHistory));
-    console.log("New price:", glizzPrice);
-    updateChart();
+    
+    if (type === "glizz") {
+        glizzPrice = (parseFloat(glizzPrice) + parseFloat(priceIncrease)).toFixed(2);
+        glizzPriceHistory.push({ time: new Date().toLocaleTimeString(), price: glizzPrice });
+        if (glizzPriceHistory.length > 20) glizzPriceHistory.shift();
+        localStorage.setItem("glizzPriceHistory", JSON.stringify(glizzPriceHistory));
+        document.getElementById("currentPrice").innerText = `$${glizzPrice}`;
+        updateChart("glizz");
+    }
+    if (type === "coffeeCow") {
+        coffeeCowPrice = (parseFloat(coffeeCowPrice) + parseFloat(priceIncrease)).toFixed(2);
+        coffeeCowPriceHistory.push({ time: new Date().toLocaleTimeString(), price: coffeeCowPrice });
+        if (coffeeCowPriceHistory.length > 20) coffeeCowPriceHistory.shift();
+        localStorage.setItem("coffeeCowPriceHistory", JSON.stringify(coffeeCowPriceHistory));
+        document.getElementById("coffeeCowPrice").innerText = `$${coffeeCowPrice}`;
+        updateChart("coffeeCow");
+    }
 }
 
-function updateChart() {
-    console.log("Updating chart...");
-    const ctx = document.getElementById("glizzChart").getContext("2d");
+function updateChart(type) {
+    console.log(`Updating ${type} chart...`);
+    const ctx = document.getElementById(`${type}Chart`).getContext("2d");
     if (!ctx) {
-        console.error("Canvas element not found.");
+        console.error("Canvas element not found for", type);
         return;
     }
+    
+    const priceHistory = type === "glizz" ? glizzPriceHistory : coffeeCowPriceHistory;
     const prices = priceHistory.map(p => p.price);
     const times = priceHistory.map(p => p.time);
     const color = prices.length > 1 && prices[prices.length - 1] > prices[prices.length - 2] ? "green" : "red";
-    console.log("Chart data:", prices);
+    
     new Chart(ctx, {
         type: "line",
         data: {
@@ -83,7 +103,6 @@ function updateChart() {
             plugins: { legend: { display: false } }
         }
     });
-    document.getElementById("currentPrice").innerText = `$${glizzPrice}`;
 }
 
 setInterval(async () => {
@@ -91,5 +110,9 @@ setInterval(async () => {
     if (isLive) connectToChat();
 }, 3000);
 
-document.addEventListener("DOMContentLoaded", updateChart);
+document.addEventListener("DOMContentLoaded", () => {
+    updateChart("glizz");
+    updateChart("coffeeCow");
+});
+
 
