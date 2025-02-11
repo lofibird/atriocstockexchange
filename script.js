@@ -1,10 +1,19 @@
+const channelName = "atrioc";
+const linkusChannel = "linkus7";
+const clientId = "gp762nuuoqcoxypju8c569th9wz7q5";
+const accessToken = "c2x7iu1o7uj3gag1hbk49phq1jc6jp";
+const botUsername = "lofibirdbot";
+
 let glizzPrice = 100;
 let coffeeCowPrice = 100;
 let fmclPrice = 100;
+let linkPrice = 100;
 let glizzPriceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
 let coffeeCowPriceHistory = JSON.parse(localStorage.getItem("coffeeCowPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: coffeeCowPrice }];
 let fmclPriceHistory = JSON.parse(localStorage.getItem("fmclPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: fmclPrice }];
+let linkPriceHistory = JSON.parse(localStorage.getItem("linkPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: linkPrice }];
 let isLive = false;
+let linkusLive = false;
 
 async function checkLiveStatus() {
     console.log("Checking if Atrioc is live...");
@@ -21,6 +30,24 @@ async function checkLiveStatus() {
         console.log("Live status:", isLive);
     } catch (error) {
         console.error("Error checking live status:", error);
+    }
+}
+
+async function checkLinkusLiveStatus() {
+    console.log("Checking if Linkus7 is live...");
+    const url = `https://api.twitch.tv/helix/streams?user_login=${linkusChannel}`;
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "Client-ID": clientId,
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        const data = await response.json();
+        linkusLive = data.data.length > 0;
+        console.log("Linkus7 Live status:", linkusLive);
+    } catch (error) {
+        console.error("Error checking Linkus7 live status:", error);
     }
 }
 
@@ -48,13 +75,17 @@ function connectToChat() {
             console.log("FMCL detected!");
             updatePrice("fmcl");
         }
+        if (message.includes("linkus7")) {
+            console.log("Linkus7 detected!");
+            updatePrice("link", 5);
+        }
     };
     socket.onerror = (error) => console.error("Chat connection error:", error);
 }
 
-function updatePrice(type) {
+function updatePrice(type, customIncrease = null) {
     console.log(`Updating price for ${type}...`);
-    const priceIncrease = (Math.random() * 1.75 + 0.25).toFixed(2);
+    const priceIncrease = customIncrease !== null ? customIncrease : (Math.random() * 1.75 + 0.25).toFixed(2);
     
     if (type === "glizz") {
         glizzPrice = (parseFloat(glizzPrice) + parseFloat(priceIncrease)).toFixed(2);
@@ -80,49 +111,28 @@ function updatePrice(type) {
         document.getElementById("fmclPrice").innerText = `$${fmclPrice}`;
         updateChart("fmcl");
     }
-}
-
-function updateChart(type) {
-    console.log(`Updating ${type} chart...`);
-    const ctx = document.getElementById(`${type}Chart`).getContext("2d");
-    if (!ctx) {
-        console.error("Canvas element not found for", type);
-        return;
+    if (type === "link") {
+        linkPrice = (parseFloat(linkPrice) + parseFloat(priceIncrease)).toFixed(2);
+        linkPriceHistory.push({ time: new Date().toLocaleTimeString(), price: linkPrice });
+        if (linkPriceHistory.length > 20) linkPriceHistory.shift();
+        localStorage.setItem("linkPriceHistory", JSON.stringify(linkPriceHistory));
+        document.getElementById("linkPrice").innerText = `$${linkPrice}`;
+        updateChart("link");
     }
-    
-    const priceHistory = type === "glizz" ? glizzPriceHistory : type === "coffeeCow" ? coffeeCowPriceHistory : fmclPriceHistory;
-    const prices = priceHistory.map(p => p.price);
-    const times = priceHistory.map(p => p.time);
-    const color = prices.length > 1 && prices[prices.length - 1] > prices[prices.length - 2] ? "green" : "red";
-    
-    new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: times,
-            datasets: [{
-                data: prices,
-                borderColor: color,
-                borderWidth: 2,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: { x: { display: true }, y: { display: true } },
-            plugins: { legend: { display: false } }
-        }
-    });
 }
 
 setInterval(async () => {
     await checkLiveStatus();
+    await checkLinkusLiveStatus();
     if (isLive) connectToChat();
-}, 3000);
+    if (linkusLive) updatePrice("link", 0.50);
+}, 60000);
 
 document.addEventListener("DOMContentLoaded", () => {
     updateChart("glizz");
     updateChart("coffeeCow");
     updateChart("fmcl");
+    updateChart("link");
 });
 
 
