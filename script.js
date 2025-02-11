@@ -7,8 +7,8 @@ let glizzPrice = 100;
 let priceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
 let isLive = false;
 
-// Check if Atrioc is live
 async function checkLiveStatus() {
+    console.log("Checking if Atrioc is live...");
     const url = `https://api.twitch.tv/helix/streams?user_login=${channelName}`;
     try {
         const response = await fetch(url, {
@@ -19,63 +19,58 @@ async function checkLiveStatus() {
         });
         const data = await response.json();
         isLive = data.data.length > 0;
+        console.log("Live status:", isLive);
     } catch (error) {
         console.error("Error checking live status:", error);
     }
 }
 
-// Connect to Twitch chat
 function connectToChat() {
     const socket = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
-    
     socket.onopen = () => {
         console.log("Connected to Twitch chat");
         socket.send(`PASS oauth:${accessToken}`);
         socket.send(`NICK ${botUsername}`);
         socket.send(`JOIN #${channelName}`);
     };
-
     socket.onmessage = (event) => {
+        console.log("Chat message received:", event.data);
         if (!isLive) return;
         if (event.data.toLowerCase().includes("glizzy")) {
+            console.log("Glizzy detected!");
             updatePrice();
         }
     };
-
     socket.onerror = (error) => console.error("Chat connection error:", error);
 }
 
-// Update the price when "Glizzy" is mentioned
 function updatePrice() {
+    console.log("Updating price...");
     const priceIncrease = (Math.random() * 1.75 + 0.25).toFixed(2);
     glizzPrice = (parseFloat(glizzPrice) + parseFloat(priceIncrease)).toFixed(2);
     priceHistory.push({ time: new Date().toLocaleTimeString(), price: glizzPrice });
-
     if (priceHistory.length > 20) priceHistory.shift();
-
     localStorage.setItem("glizzPriceHistory", JSON.stringify(priceHistory));
+    console.log("New price:", glizzPrice);
     updateChart();
 }
 
-// Update the chart display
 function updateChart() {
+    console.log("Updating chart...");
     const ctx = document.getElementById("glizzChart").getContext("2d");
-
     if (!ctx) {
         console.error("Canvas element not found.");
         return;
     }
-
     const prices = priceHistory.map(p => p.price);
     const times = priceHistory.map(p => p.time);
     const color = prices.length > 1 && prices[prices.length - 1] > prices[prices.length - 2] ? "green" : "red";
-
+    console.log("Chart data:", prices);
     new Chart(ctx, {
         type: "line",
         data: {
             labels: times,
             datasets: [{
-                label: "$GLIZZ Price",
                 data: prices,
                 borderColor: color,
                 borderWidth: 2,
@@ -84,20 +79,17 @@ function updateChart() {
         },
         options: {
             responsive: true,
-            scales: { 
-                x: { display: true }, 
-                y: { display: true } 
-            }
+            scales: { x: { display: true }, y: { display: true } },
+            plugins: { legend: { display: false } }
         }
     });
+    document.getElementById("currentPrice").innerText = `$${glizzPrice}`;
 }
 
-// Run live check and chat monitoring every 3 seconds
 setInterval(async () => {
     await checkLiveStatus();
     if (isLive) connectToChat();
 }, 3000);
 
-// Ensure the chart is displayed when the page loads
 document.addEventListener("DOMContentLoaded", updateChart);
 
