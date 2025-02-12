@@ -110,6 +110,16 @@ function applyMarketStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    const chartSubheaders = {
+        glizz: "GlizzyCorp Quantum Computing",
+        coffeeCow: "Coffee Cow Brewing",
+        fmcl: "Chungus Music Group",
+        link: "Linkus Speedrunning Footwear Inc",
+        htmn: "Hitman Daycare Solutions",
+        squx: "Squeex Hair Loss Supplements"
+    };
+
+document.addEventListener("DOMContentLoaded", () => {
       ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => updateChart(type, 100, 100));
     setInterval(async () => {
         await checkLiveStatus();
