@@ -229,6 +229,8 @@ function updateChart(type, prevPrice, newPrice) {
     }
 }
 
+document.getElementById("marketOverlay").style.display = "block"; // Show overlay
+
 // Update the DOM after page load to include $HTMN chart
 document.addEventListener("DOMContentLoaded", () => {
     ["glizz", "coffeeCow", "fmcl", "link", "htmn"].forEach(type => updateChart(type, 100, 100));
