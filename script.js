@@ -92,3 +92,83 @@ setInterval(updateStockPrice, 1000);
 process.on('exit', () => {
   fs.writeFileSync('stockPrice.json', JSON.stringify(stockPrice));
 });
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById("stockChart").getContext("2d");
+    const priceDisplay = document.getElementById("currentPrice"); // Reference to price display
+
+    // Initial data
+    let stockPrices = [100]; // Start at $100
+    let timeLabels = [new Date().toLocaleTimeString()];
+    const maxDataPoints = 20; // Keep only the last 20 points
+
+    const stockChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                label: "$GLIZZ",
+                data: stockPrices,
+                borderColor: "green", // Default color
+                backgroundColor: "rgba(0, 255, 0, 0.1)", // Default green fill
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            animation: false, // Prevents lag over time
+            plugins: {
+                legend: { display: false } // Hides the legend
+            },
+            scales: {
+                x: { title: { display: true, text: "Time" } },
+                y: { title: { display: true, text: "Price ($)" } }
+            }
+        }
+    });
+
+    // Function to update stock price
+    function updateStockPrice() {
+        let lastPrice = stockPrices[stockPrices.length - 1];
+        let newPrice = lastPrice + (Math.random() * 4 - 2); // Random +/- fluctuation
+        newPrice = parseFloat(newPrice.toFixed(2));
+
+        stockPrices.push(newPrice);
+        timeLabels.push(new Date().toLocaleTimeString());
+
+        // Remove oldest data if exceeding max points
+        if (stockPrices.length > maxDataPoints) {
+            stockPrices.shift();
+            timeLabels.shift();
+        }
+
+        // Change color based on price movement
+        if (newPrice > lastPrice) {
+            stockChart.data.datasets[0].borderColor = "green";
+            stockChart.data.datasets[0].backgroundColor = "rgba(0, 255, 0, 0.1)";
+        } else {
+            stockChart.data.datasets[0].borderColor = "red";
+            stockChart.data.datasets[0].backgroundColor = "rgba(255, 0, 0, 0.1)";
+        }
+
+        // Update the displayed price
+        if (priceDisplay) {
+            priceDisplay.textContent = `$GLIZZ: $${newPrice.toFixed(2)}`;
+        }
+
+        stockChart.update();
+    }
+
+    // Update price every second
+    setInterval(updateStockPrice, 1000);
+
+    // Function to manually manipulate the stock price
+    function setStockPrice(price) {
+        stockPrices[stockPrices.length - 1] = price;
+
+        if (priceDisplay) {
+            priceDisplay.textContent = `$GLIZZ: $${price.toFixed(2)}`;
+        }
+
+        stockChart.update();
+    }
+});
