@@ -116,11 +116,11 @@ document.addEventListener("DOMContentLoaded", () => {
         await checkSqueexLiveStatus();
     }, 60000);
     setInterval(() => {
-    setInterval(function() {
-    ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(function(type) {
-        const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
-        const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
-        updateChart(type, prevPrice, newPrice);
-    });
-}, 3000);
+    setInterval(() => {
+           ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => {
+            const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
+            const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
+            updateChart(type, prevPrice, newPrice);
+        });
+    }, 3000);
 });
