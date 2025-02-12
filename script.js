@@ -7,7 +7,7 @@ const priceHistory = {
     htmn: [{ time: new Date().toLocaleTimeString(), price: 100 }],
     squx: [{ time: new Date().toLocaleTimeString(), price: 100 }] // Added SQUX
 };
-let isLive = false;
+let isLive = true;
 let linkusLive = false;
 let squeexLive = false;
 
