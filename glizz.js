@@ -1,13 +1,13 @@
 const channelName = "atrioc";
-const clientId = "YOUR_TWITCH_CLIENT_ID";
-const accessToken = "YOUR_TWITCH_ACCESS_TOKEN";
+const clientId = "gp762nuuoqcoxypju8c569th9wz7q5";
+const accessToken = "54bg1ejaca8l1f49iyudx3f4v3a239";
 const botUsername = "lofibirdbot";
 let glizzPrice = 100;
 let priceHistory = JSON.parse(localStorage.getItem("glizzPriceHistory")) || [{ time: new Date().toLocaleTimeString(), price: glizzPrice }];
 let isLive = false;
 
 async function checkLiveStatus() {
-    const url = `https://api.twitch.tv/helix/streams?user_login=${channelName}`;
+    const url = `https://api.twitch.tv/helix/streams?user_login=${atrioc}`;
     const response = await fetch(url, {
         headers: {
             "Client-ID": clientId,
