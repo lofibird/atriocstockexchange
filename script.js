@@ -20,12 +20,12 @@ function updatePrice(type, customIncrease = null) {
     priceHistory[type].push({ time, price: newPrice });
     if (priceHistory[type].length > 20) priceHistory[type].shift();
     
-    document.getElementById(`${type}Price`).innerText = `$${newPrice}`;
+    document.getElementById(${type}Price).innerText = $${newPrice};
     updateChart(type, prevPrice, newPrice);
 }
 
 function updateChart(type, prevPrice, newPrice) {
-    const ctx = document.getElementById(`${type}Chart`).getContext("2d");
+    const ctx = document.getElementById(${type}Chart).getContext("2d");
     const history = priceHistory[type];
     const color = newPrice > prevPrice ? 'green' : 'red';
 
@@ -54,7 +54,7 @@ function updateChart(type, prevPrice, newPrice) {
                 scales: {
                     y: {
                         ticks: {
-                            callback: value => `$${value.toFixed(2)}`
+                            callback: value => $${value.toFixed(2)}
                         }
                     }
                 }
@@ -66,10 +66,10 @@ function updateChart(type, prevPrice, newPrice) {
 
 async function checkLiveStatus() {
     try {
-        const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=atrioc`, {
+        const response = await fetch(https://api.twitch.tv/helix/streams?user_login=atrioc, {
             headers: {
                 "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5",
-                "Authorization": `Bearer c2x7iu1o7uj3gag1hbk49phq1jc6jp`
+                "Authorization": Bearer c2x7iu1o7uj3gag1hbk49phq1jc6jp
             }
         });
         const data = await response.json();
@@ -82,10 +82,10 @@ async function checkLiveStatus() {
 
 async function checkSqueexLiveStatus() {
     try {
-        const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=squeex`, {
+        const response = await fetch(https://api.twitch.tv/helix/streams?user_login=squeex, {
             headers: {
                 "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5",
-                "Authorization": `Bearer 54bg1ejaca8l1f49iyudx3f4v3a239`
+                "Authorization": Bearer 54bg1ejaca8l1f49iyudx3f4v3a239
             }
         });
         const data = await response.json();
@@ -115,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
         await checkLiveStatus();
         await checkSqueexLiveStatus();
     }, 60000);
-    setInterval(() => {
     setInterval(() => {
            ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => {
             const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
