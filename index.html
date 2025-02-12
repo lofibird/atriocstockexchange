@@ -64,17 +64,19 @@
             <canvas id="htmnChart"></canvas>
         </div>
 
-        <div id="chartsContainer">
+<div id="marketOverlay">Markets are closed!</div> <!-- Move this outside of #chartsContainer -->
+
+<div id="chartsContainer">
     <canvas id="glizzChart"></canvas>
     <canvas id="coffeeCowChart"></canvas>
     <canvas id="fmclChart"></canvas>
     <canvas id="linkChart"></canvas>
-     <canvas id="htmnChart"></canvas>
-    <div id="marketOverlay">Markets are closed!</div>
-        </div>
+    <canvas id="htmnChart"></canvas>
+</div>
+
         <style>
-            #marketOverlay {
-    position: absolute;
+#marketOverlay {
+    position: fixed; /* Ensures it covers the entire viewport */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-20deg);
@@ -82,12 +84,11 @@
     font-weight: bold;
     color: rgba(255, 0, 0, 0.5);
     text-shadow: 2px 2px 5px black;
-    display: none;
+    display: none; /* Ensure you toggle this with JS */
     pointer-events: none;
+    z-index: 1000; /* Make sure it appears above all elements */
 }
-#chartsContainer {
-    position: relative;
-}</style>
+        </style>
     </div>
 </div>
 </body>
