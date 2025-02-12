@@ -85,7 +85,7 @@ async function checkSqueexLiveStatus() {
         const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=squeex`, {
             headers: {
                 "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5",
-                "Authorization": `Bearer c2x7iu1o7uj3gag1hbk49phq1jc6jp`
+                 "Authorization": `Bearer 54bg1ejaca8l1f49iyudx3f4v3a239`
             }
         });
         const data = await response.json();
@@ -108,3 +108,18 @@ function applyMarketStatus() {
         overlayText.style.display = "block";
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+      ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => updateChart(type, 100, 100));
+    setInterval(async () => {
+        await checkLiveStatus();
+        await checkSqueexLiveStatus();
+    }, 60000);
+    setInterval(() => {
+           ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => {
+            const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
+            const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
+            updateChart(type, prevPrice, newPrice);
+        });
+    }, 3000);
+});
