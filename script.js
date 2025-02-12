@@ -3,7 +3,9 @@ const priceHistory = {
     glizz: [{ time: new Date().toLocaleTimeString(), price: 100 }],
     coffeeCow: [{ time: new Date().toLocaleTimeString(), price: 100 }],
     fmcl: [{ time: new Date().toLocaleTimeString(), price: 100 }],
-    link: [{ time: new Date().toLocaleTimeString(), price: 100 }]
+    link: [{ time: new Date().toLocaleTimeString(), price: 100 }],
+    htmn: [{ time: new Date().toLocaleTimeString(), price: 100 }] // Add htmn here
+};
 };
 let isLive = false;
 let linkusLive = false;
@@ -132,6 +134,7 @@ function connectToChat() {
 
 document.addEventListener("DOMContentLoaded", () => {
     ["glizz", "coffeeCow", "fmcl", "link"].forEach(type => updateChart(type, 100, 100));
+});
 
     setInterval(async () => {
         await checkLiveStatus();
@@ -141,12 +144,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 60000);
 
     setInterval(() => {
-        ["glizz", "coffeeCow", "fmcl", "link"].forEach(type => {
-            const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
-            const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
-            updateChart(type, prevPrice, newPrice);
-        });
-    }, 3000);
+    ["glizz", "coffeeCow", "fmcl", "link", "htmn"].forEach(type => { // Added "htmn"
+        const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
+        const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
+        updateChart(type, prevPrice, newPrice);
+    });
+}, 3000);
 });
 // Initialize price history for $HTMN
 priceHistory.htmn = [{ time: new Date().toLocaleTimeString(), price: 100 }];
@@ -228,8 +231,6 @@ function updateChart(type, prevPrice, newPrice) {
         });
     }
 }
-
-document.getElementById("marketOverlay").style.display = "block"; // Show overlay
 
 // Update the DOM after page load to include $HTMN chart
 document.addEventListener("DOMContentLoaded", () => {
