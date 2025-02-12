@@ -110,34 +110,6 @@ function applyMarketStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const chartSubheaders = {
-        glizz: "GlizzyCorp Quantum Computing",
-        coffeeCow: "Coffee Cow Brewing",
-        fmcl: "Chungus Music Group",
-        link: "Linkus Speedrunning Footwear Inc",
-        htmn: "Hitman Daycare Solutions",
-        squx: "Squeex Hair Loss Supplements"
-    };
-
-        Object.keys(chartSubheaders).forEach(type => {
-        const chartContainer = document.getElementById(`${type}Chart`).parentElement;
-        const subheader = document.createElement("h3");
-        subheader.innerText = chartSubheaders[type];
-        chartContainer.insertBefore(subheader, chartContainer.firstChild);
-    });
-    ["glizz", "coffeeCow", "fmcl", "link", "htmn"].forEach(type => updateChart(type, 100, 100));
-    setInterval(async () => {
-        await checkLiveStatus();
-    }, 60000);
-    setInterval(() => {
-        ["glizz", "coffeeCow", "fmcl", "link", "htmn"].forEach(type => {
-            const prevPrice = parseFloat(priceHistory[type].slice(-2, -1)[0]?.price || 100);
-            const newPrice = parseFloat(priceHistory[type].slice(-1)[0].price);
-            updateChart(type, prevPrice, newPrice);
-        });
-    }, 3000);
-
-document.addEventListener("DOMContentLoaded", () => {
       ["glizz", "coffeeCow", "fmcl", "link", "htmn", "squx"].forEach(type => updateChart(type, 100, 100));
     setInterval(async () => {
         await checkLiveStatus();
