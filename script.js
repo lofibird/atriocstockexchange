@@ -9,7 +9,7 @@ const priceHistory = {
 };
 let isLive = true;
 let linkusLive = false;
-let squeexLive = false;
+let squeexLive = true;
 
 function updatePrice(type, customIncrease = null) {
     const priceIncrease = customIncrease !== null ? customIncrease : (Math.random() * 1.75 + 0.25).toFixed(2);
