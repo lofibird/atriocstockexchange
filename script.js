@@ -85,7 +85,7 @@ async function checkSqueexLiveStatus() {
         const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=squeex`, {
             headers: {
                 "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5",
-                "Authorization": `Bearer c2x7iu1o7uj3gag1hbk49phq1jc6jp`
+                "Authorization": `Bearer 54bg1ejaca8l1f49iyudx3f4v3a239`
             }
         });
         const data = await response.json();
